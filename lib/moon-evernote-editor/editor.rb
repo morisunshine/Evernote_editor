@@ -1,7 +1,11 @@
 require 'evernote_oauth'
-require 'json'
 require 'fileutils'
 require 'tempfile'
+require "highline/import"
+require "json"
+require "redcarpet"
+require "reverse_markdown"
+require "sanitize"
 
 module EvernoteEditor
 
@@ -15,7 +19,8 @@ module EvernoteEditor
 			@tags    = (args.flatten[1] ||  '').split(',')
 			@options = opts
 			@sandbox = opts[:sandbox]
-			@mkdout  = ""
+			@mkdout  = Redcarpet::Markdown.new(Redcarpet::Render::XHTML,
+              autolink: true, space_after_headers: true, no_intra_emphasis: true)
 			@notebooks = []
 		end
 
@@ -33,7 +38,7 @@ module EvernoteEditor
             store_editor unless @configuration['editor']
 		end
 
-		def creat_note
+		def create_note
 			markdown = invoke_editor
 			begin
 				evn_client = EvernoteOAuth::Client.new(token: @configuration['token'], sanbox: @sandbox)
@@ -168,7 +173,7 @@ module EvernoteEditor
 		end
 
 		def store_editor
-			editor_command = ask("Please enter the editor command you would like to use: ") { |q| q.default = `while vim`.strip.chomp}
+			editor_command = ask("Please enter the editor command you would like to use: ") { |q| q.default = `which vim`.strip.chomp}
 			@configuration['editor'] = editor_command
 			write_configuration
 		end
@@ -177,7 +182,7 @@ module EvernoteEditor
 			File.open(CONFIGURATION_FILE, "w") do |file|
 				file.write @configuration.to_json
 			end
-		end
+		e
 
 		def lookup_notebook_name(guid)
 			if @notebooks.empty?
