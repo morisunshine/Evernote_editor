@@ -11,7 +11,7 @@ OptionParser.new do |opts|
 	opts.banner = "Usage: evereditor [options] title tag1, tag2"
 
 	options[:edit] = false
-	options[:sandxbox] = false
+	options[:sandbox] = false
 
 	opts.on( '-s', '--sandbox', 'Use the Evernote sanbox server') do
 		options[:sandbox] = true
