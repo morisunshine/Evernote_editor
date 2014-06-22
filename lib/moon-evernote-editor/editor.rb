@@ -20,7 +20,9 @@ module EvernoteEditor
       @options = opts
       @sandbox = opts[:sandbox]
       @mkdout  = Redcarpet::Markdown.new(Redcarpet::Render::XHTML,
-        autolink: true, space_after_headers: true, no_intra_emphasis: true)
+        autolink: true, space_after_headers: true, no_intra_emphasis: true,
+        fenced_code_blocks: true, tables: true, strikethrough: true, underline: true,
+        highline: true, quote: true, footnotes: true)
       @notebooks = []
     end
 
@@ -131,6 +133,7 @@ module EvernoteEditor
 
     def note_markup(markdown)
       "<?xml version='1.0' encoding='UTF-8'?><!DOCTYPE en-note SYSTEM 'http://xml.evernote.com/pub/enml2.dtd'><en-note>#{@mkdout.render(markdown)}</en-note>"
+
     end
 
     def note_markdown(markup)
